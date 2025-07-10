@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import RequireAuth from "../components/RequireAuth";
 import { supabase } from "@/supabaseClient";
+import { Schedule } from "../dashboard/ScheduleCalendar";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const times = Array.from({ length: 48 }, (_, i) => {
@@ -11,7 +12,7 @@ const times = Array.from({ length: 48 }, (_, i) => {
 });
 
 export default function PreviewPage() {
-  const [schedules, setSchedules] = useState<any[]>([]);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [selectedDay, setSelectedDay] = useState(days[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]);
   const [selectedTime, setSelectedTime] = useState(() => {
     const now = new Date();
@@ -19,7 +20,7 @@ export default function PreviewPage() {
     const min = now.toLocaleString("sv-SE", { timeZone: "Europe/Stockholm", minute: "2-digit" });
     return `${hour}:${min}`;
   });
-  const [current, setCurrent] = useState<any | null>(null);
+  const [current, setCurrent] = useState<Schedule | null>(null);
   const [copied, setCopied] = useState(false);
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
 

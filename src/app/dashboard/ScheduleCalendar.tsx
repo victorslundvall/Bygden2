@@ -10,8 +10,16 @@ const times = Array.from({ length: 48 }, (_, i) => {
   return `${hour.toString().padStart(2, "0")}:${min}`;
 });
 
-function toStockholmTime(date: Date) {
-  return date.toLocaleTimeString("sv-SE", { timeZone: "Europe/Stockholm", hour: "2-digit", minute: "2-digit" });
+// Define the Schedule interface
+export interface Schedule {
+  day_of_week: string;
+  start_time: string;
+  end_time: string;
+  video_name: string;
+  video_url: string;
+  is_active: boolean;
+  restaurant_id: string;
+  id?: string; // optional, for Supabase
 }
 
 // Color palette for scheduled videos
@@ -33,7 +41,7 @@ const getVideoColor = (videoName: string) => {
 };
 
 // Helper to check for conflicts in the selected time range
-function hasConflict(day: string, startIdx: number, endIdx: number, schedules: any[]) {
+function hasConflict(day: string, startIdx: number, endIdx: number, schedules: Schedule[]) {
   return schedules.some(s => {
     if (s.day_of_week !== day) return false;
     const sStart = times.indexOf(s.start_time);
@@ -44,8 +52,8 @@ function hasConflict(day: string, startIdx: number, endIdx: number, schedules: a
 }
 
 interface ScheduleCalendarProps {
-  schedules: any[];
-  onDraftChange: (draft: any[]) => void;
+  schedules: Schedule[];
+  onDraftChange: (draft: Schedule[]) => void;
   restaurantId: string | null;
 }
 
@@ -56,7 +64,7 @@ export default function ScheduleCalendar({ schedules, onDraftChange, restaurantI
   const [message, setMessage] = useState<string | null>(null);
   const [slider, setSlider] = useState<{ start: number; end: number }>({ start: 16, end: 18 });
   const [selectedVideo, setSelectedVideo] = useState<string>("");
-  const [draft, setDraft] = useState<any[]>(schedules);
+  const [draft, setDraft] = useState<Schedule[]>(schedules);
 
   useEffect(() => {
     setDraft(schedules);
@@ -124,7 +132,7 @@ export default function ScheduleCalendar({ schedules, onDraftChange, restaurantI
   };
 
   // Helper to check if this is the start cell for a scheduled video
-  const isStartOfScheduledVideo = (schedule: any, timeIdx: number) => {
+  const isStartOfScheduledVideo = (schedule: Schedule, timeIdx: number) => {
     return times[timeIdx] === schedule.start_time;
   };
 

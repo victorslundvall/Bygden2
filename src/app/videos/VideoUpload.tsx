@@ -44,7 +44,7 @@ export default function VideoUpload({ onUpload }: { onUpload: () => void }) {
       // Sanitize filename
       const sanitizedFilename = sanitizeFilename(file.name);
       // Upload to Supabase Storage (bucket: 'videos')
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("videos")
         .upload(`public/${Date.now()}-${sanitizedFilename}`, file, {
           cacheControl: "3600",
@@ -56,8 +56,12 @@ export default function VideoUpload({ onUpload }: { onUpload: () => void }) {
         setProgress(100);
         onUpload();
       }
-    } catch (e: any) {
-      setError(`V003: Upload failed. ${e.message}`);
+    } catch (e: unknown) {
+      let message = 'Unknown error';
+      if (e && typeof e === 'object' && 'message' in e && typeof (e as any).message === 'string') {
+        message = (e as any).message;
+      }
+      setError(`V003: Upload failed. ${message}`);
     } finally {
       setUploading(false);
     }

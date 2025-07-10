@@ -4,6 +4,7 @@ import { supabase } from "@/supabaseClient";
 import { useRouter } from "next/navigation";
 import ScheduleCalendar from "./ScheduleCalendar";
 import { useState, useEffect } from "react";
+import { Schedule } from "./ScheduleCalendar";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -16,8 +17,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const [showDeleteAll, setShowDeleteAll] = useState(false);
   const [showDeleteDay, setShowDeleteDay] = useState<string | null>(null);
-  const [draftSchedules, setDraftSchedules] = useState<any[] | null>(null);
-  const [activeSchedules, setActiveSchedules] = useState<any[]>([]);
+  const [draftSchedules, setDraftSchedules] = useState<Schedule[] | null>(null);
+  const [activeSchedules, setActiveSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
@@ -40,7 +41,7 @@ export default function DashboardPage() {
   }, [restaurantId]);
 
   // Handler for saving (posting) schedules
-  const handleSaveSchedules = async (schedules: any[]) => {
+  const handleSaveSchedules = async (schedules: Schedule[]) => {
     if (!restaurantId) return;
     setLoading(true);
     setMessage(null);
@@ -89,7 +90,7 @@ export default function DashboardPage() {
   };
 
   // Handler for draft changes from ScheduleCalendar
-  const handleDraftChange = (draft: any[]) => {
+  const handleDraftChange = (draft: Schedule[]) => {
     setDraftSchedules(draft);
   };
 
@@ -111,7 +112,7 @@ export default function DashboardPage() {
             <div className="flex gap-2">
               <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" onClick={() => setShowDeleteAll(true)}>Delete All Schedules</button>
               <select className="bg-gray-100 text-gray-800 px-4 py-2 rounded" value={showDeleteDay || ""} onChange={e => setShowDeleteDay(e.target.value)}>
-                <option value="">Delete Day's Schedules</option>
+                <option value="">Delete Day&apos;s Schedules</option>
                 {days.map(day => <option key={day} value={day}>{day}</option>)}
               </select>
             </div>
