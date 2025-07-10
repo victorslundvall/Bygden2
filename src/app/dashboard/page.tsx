@@ -49,7 +49,10 @@ export default function DashboardPage() {
     await supabase.from("schedules").delete().eq("restaurant_id", restaurantId);
     if (schedules.length > 0) {
       // Remove any id fields from draft schedules before insert, and add restaurant_id
-      const schedulesToInsert = schedules.map(({ id, ...rest }) => ({ ...rest, restaurant_id: restaurantId }));
+      const schedulesToInsert = schedules.map((schedule) => {
+        const { id, ...rest } = schedule;
+        return { ...rest, restaurant_id: restaurantId };
+      });
       const { error } = await supabase.from("schedules").insert(schedulesToInsert);
       if (error) {
         setMessage("Error saving schedules: " + error.message);
