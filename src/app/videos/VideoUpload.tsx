@@ -58,8 +58,8 @@ export default function VideoUpload({ onUpload }: { onUpload: () => void }) {
       }
     } catch (e: unknown) {
       let message = 'Unknown error';
-      if (e && typeof e === 'object' && 'message' in e && typeof (e as any).message === 'string') {
-        message = (e as any).message;
+      if (e && typeof e === 'object' && 'message' in e && typeof (e as { message?: unknown }).message === 'string') {
+        message = (e as { message: string }).message;
       }
       setError(`V003: Upload failed. ${message}`);
     } finally {
